@@ -1,0 +1,9 @@
+#!/bin/sh
+exec 2>&1
+export DOCKER_HOST="unix:///run/user/$(id -u)/docker.sock"
+while ! docker info > /dev/null 2>&1; do
+    echo "Waiting for dockerd to start..."
+    sleep 1
+done
+docker build -t shell docker
+exec ttyd -W docker run --rm -it -h shell shell
